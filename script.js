@@ -1,5 +1,5 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const baseURL = 'https://verce-phi.vercel.app/films';
+document.addEventListener('DOMContentLoaded'), () => 
+    const baseURL = 'https://vercelweek3.vercel.app/films';
 
     function fetchFilms() {
         return fetch(`${baseURL}/films`)
@@ -84,8 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => console.error('Error deleting film:', error))
     }
 
-    function filmMenu() {
-        return fetchFilms("https://json-server-vercel-2y3x.vercel.app/")
+    function filmMenu() 
+        return fetchFilms())
             .then(films => {
                 let filmMenu = document.getElementById("films");
                 filmMenu.innerHTML = "";
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             })
             .catch(error => console.error('Error fetching films:', error));
-    }
+    
 
     function filmDetails(film) {
         let posterElement = document.getElementById('poster');
@@ -163,4 +163,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     filmMenu();
-});
+;
