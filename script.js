@@ -1,28 +1,29 @@
-document.addEventListener('DOMContentLoaded'), () => 
-    const baseURL = 'https://vercelweek3.vercel.app/films';
+
+document.addEventListener('DOMContentLoaded', () => {
+    const baseURL = 'http://localhost:3000';
 
     function fetchFilms() {
-        return fetch(`${baseURL}/films`)
-            .then(res => res.json())
-            .catch(error => console.error('Error fetching films:', error));
+        return fetch(`https://backend-beta-kohl.vercel.app/films`)
+           .then(res => res.json())
+           .catch(error => console.error('Error fetching films:', error));
     }
 
     function fetchFilmById(id) {
-        return fetch(`${baseURL}/films/${id}`)
-            .then(res => res.json())
-            .catch(error => console.error('Error fetching film by ID:', error));
+        return fetch(`https://backend-beta-kohl.vercel.app/films/${id}`)
+           .then(res => res.json())
+           .catch(error => console.error('Error fetching film by ID:', error));
     }
 
     function updateTicketNumber(id, newTicketNumber) {
-        return fetch(`${baseURL}/films/${id}`, {
+        return fetch(`https://backend-beta-kohl.vercel.app/films/${id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({ tickets_sold: newTicketNumber }),
         })
-        .then(res => res.json())
-        .catch(error => console.error('Error updating ticket:', error));
+       .then(res => res.json())
+       .catch(error => console.error('Error updating ticket:', error));
     }
 
     function createTicket(filmId, numberOfTickets) {
@@ -36,8 +37,8 @@ document.addEventListener('DOMContentLoaded'), () =>
                 "number_of_tickets": numberOfTickets
             }),
         })
-        .then(res => res.json())
-        .catch(error => console.error('Error creating ticket:', error));
+       .then(res => res.json())
+       .catch(error => console.error('Error creating ticket:', error));
     }
 
     function purchaseTicket(filmId, ticketsSold, capacity) {
@@ -49,14 +50,14 @@ document.addEventListener('DOMContentLoaded'), () =>
             ticketNumberElement.textContent = capacity - newTicketNumber;
 
             return updateTicketNumber(filmId, newTicketNumber)
-                .then(updatedFilm => {
+               .then(updatedFilm => {
                     if (updatedFilm) {
                         if (updatedFilm.tickets_sold === capacity) {
                             buyTicketBtn.textContent = "Sold Out";
                             buyTicketBtn.disabled = true;
                         }
                         return createTicket(filmId, 1)
-                            .then(createdTicket => {
+                           .then(createdTicket => {
                                 if (createdTicket) {
                                     console.log("Ticket purchased successfully:", createdTicket);
                                     return updatedFilm;
@@ -64,7 +65,7 @@ document.addEventListener('DOMContentLoaded'), () =>
                             });
                     }
                 })
-                .catch(error => console.error('Update ticket number error:', error));
+               .catch(error => console.error('Update ticket number error:', error));
         } else {
             alert("Film is sold out!");
             return Promise.resolve();
@@ -72,21 +73,21 @@ document.addEventListener('DOMContentLoaded'), () =>
     }
 
     function deleteFilm(id) {
-        return fetch(`${baseURL}/films/${id}`, {
+        return fetch(`https://backend-beta-kohl.vercel.app/films/${id}`, {
             method: "DELETE",
         })
-        .then(() => {
+       .then(() => {
             let filmItem = document.getElementById(`film-${id}`);
             if (filmItem) {
                 filmItem.remove();
             }
         })
-        .catch(error => console.error('Error deleting film:', error))
+       .catch(error => console.error('Error deleting film:', error))
     }
 
-    function filmMenu() 
-        return fetchFilms())
-            .then(films => {
+    function filmMenu() {
+        return fetchFilms()
+           .then(films => {
                 let filmMenu = document.getElementById("films");
                 filmMenu.innerHTML = "";
 
@@ -98,15 +99,15 @@ document.addEventListener('DOMContentLoaded'), () =>
 
                     filmItem.addEventListener("click", () => {
                         fetchFilmById(film.id)
-                            .then(selectedFilm => filmDetails(selectedFilm))
-                            .catch(error => console.error('Fetch film by ID error:', error));
+                           .then(selectedFilm => filmDetails(selectedFilm))
+                           .catch(error => console.error('Fetch film by ID error:', error));
                     });
 
                     let deleteButton = document.createElement("button");
                     deleteButton.textContent = "Delete";
                     deleteButton.addEventListener("click", () => {
                         deleteFilm(film.id)
-                            .catch(error => console.error('Delete film error:', error));
+                           .catch(error => console.error('Delete film error:', error));
                     });
 
                     filmItem.appendChild(deleteButton);
@@ -114,13 +115,13 @@ document.addEventListener('DOMContentLoaded'), () =>
 
                     if (index === 0) {
                         fetchFilmById(film.id)
-                            .then(selectedFilm => filmDetails(selectedFilm))
-                            .catch(error => console.error('Error fetching film by ID:', error));
+                           .then(selectedFilm => filmDetails(selectedFilm))
+                           .catch(error => console.error('Error fetching film by ID:', error));
                     }
                 });
             })
-            .catch(error => console.error('Error fetching films:', error));
-    
+           .catch(error => console.error('Error fetching films:', error));
+    }
 
     function filmDetails(film) {
         let posterElement = document.getElementById('poster');
@@ -163,4 +164,4 @@ document.addEventListener('DOMContentLoaded'), () =>
     }
 
     filmMenu();
-;
+});
