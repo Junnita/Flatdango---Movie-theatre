@@ -1,167 +1,139 @@
 
-document.addEventListener('DOMContentLoaded', () => {
-    const baseURL = 'http://localhost:3000';
+// creating a new variable and assigning it the vaulue of the API url, so that we can easily access and call it.
 
-    function fetchFilms() {
-        return fetch(`https://backend-beta-kohl.vercel.app/films`)
-           .then(res => res.json())
-           .catch(error => console.error('Error fetching films:', error));
-    }
 
-    function fetchFilmById(id) {
-        return fetch(`https://backend-beta-kohl.vercel.app/films/${id}`)
-           .then(res => res.json())
-           .catch(error => console.error('Error fetching film by ID:', error));
-    }
-
-    function updateTicketNumber(id, newTicketNumber) {
-        return fetch(`https://backend-beta-kohl.vercel.app/films/${id}`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ tickets_sold: newTicketNumber }),
-        })
-       .then(res => res.json())
-       .catch(error => console.error('Error updating ticket:', error));
-    }
-
-    function createTicket(filmId, numberOfTickets) {
-        fetch(`${baseURL}/tickets`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "film_id": filmId,
-                "number_of_tickets": numberOfTickets
-            }),
-        })
-       .then(res => res.json())
-       .catch(error => console.error('Error creating ticket:', error));
-    }
-
-    function purchaseTicket(filmId, ticketsSold, capacity) {
-        const buyTicketBtn = document.getElementById("buy-ticket");
-        const ticketNumberElement = document.getElementById('ticket-num');
-
-        if (ticketsSold < capacity) {
-            let newTicketNumber = ticketsSold + 1;
-            ticketNumberElement.textContent = capacity - newTicketNumber;
-
-            return updateTicketNumber(filmId, newTicketNumber)
-               .then(updatedFilm => {
-                    if (updatedFilm) {
-                        if (updatedFilm.tickets_sold === capacity) {
-                            buyTicketBtn.textContent = "Sold Out";
-                            buyTicketBtn.disabled = true;
-                        }
-                        return createTicket(filmId, 1)
-                           .then(createdTicket => {
-                                if (createdTicket) {
-                                    console.log("Ticket purchased successfully:", createdTicket);
-                                    return updatedFilm;
-                                }
-                            });
-                    }
-                })
-               .catch(error => console.error('Update ticket number error:', error));
-        } else {
-            alert("Film is sold out!");
-            return Promise.resolve();
-        }
-    }
-
-    function deleteFilm(id) {
-        return fetch(`https://backend-beta-kohl.vercel.app/films/${id}`, {
-            method: "DELETE",
-        })
-       .then(() => {
-            let filmItem = document.getElementById(`film-${id}`);
-            if (filmItem) {
-                filmItem.remove();
+let url = 'https://backend-beta-kohl.vercel.app/films';
+//here, we are going to create a fuction called addMovieTitles, and thus we are going to populate the <ul> tags using the <li> tags, which thus contain the movietitles that have been fetched from the API, declared by the variable url. 
+function addMovieTitles() {
+    // initiates a http request from the server, and if successful, then:
+    fetch(url)
+        // if the request is successful, we are going to perform the actions synced in the arrow function as below:
+        .then(response => {
+            // if the response is is not successful:
+            if (!response.ok) {
+                // we will throw an error message to the user.
+                throw new Error('Network response was not ok.');
             }
+            // otherwise if the response is okay, the .then() method is chained to parse the JSON content of the response.  
+            return response.json();
         })
-       .catch(error => console.error('Error deleting film:', error))
-    }
-
-    function filmMenu() {
-        return fetchFilms()
-           .then(films => {
-                let filmMenu = document.getElementById("films");
-                filmMenu.innerHTML = "";
-
-                films.forEach((film, index) => {
-                    let filmItem = document.createElement("li");
-                    filmItem.id = `film-${film.id}`;
-                    filmItem.classList.add("film", "item")
-                    filmItem.textContent = film.title;
-
-                    filmItem.addEventListener("click", () => {
-                        fetchFilmById(film.id)
-                           .then(selectedFilm => filmDetails(selectedFilm))
-                           .catch(error => console.error('Fetch film by ID error:', error));
-                    });
-
-                    let deleteButton = document.createElement("button");
-                    deleteButton.textContent = "Delete";
-                    deleteButton.addEventListener("click", () => {
-                        deleteFilm(film.id)
-                           .catch(error => console.error('Delete film error:', error));
-                    });
-
-                    filmItem.appendChild(deleteButton);
-                    filmMenu.appendChild(filmItem);
-
-                    if (index === 0) {
-                        fetchFilmById(film.id)
-                           .then(selectedFilm => filmDetails(selectedFilm))
-                           .catch(error => console.error('Error fetching film by ID:', error));
-                    }
+        .then(data => {
+            // The map method iterates over each movie object in the data array and extracts the title property in all of them.
+            const titles = data.map(movie => movie.title);
+            // we are going to get html document by that id and assign it to a variable filmsList
+            const filmsList = document.getElementById("films");
+            // writing into html document the movie titles it was going to fetch and assign it an empty string, to make sure that the value entered is nothing else but a string data type.
+            filmsList.textContent = " ";
+            data.forEach(movie => {
+                const li = document.createElement("li");
+                // getting the list and assigning it a classname
+                li.className = "film item";
+                li.textContent = movie.title;
+                // Add event listener to each movie title for changing the poster
+                li.addEventListener('click', () => {
+                    changePoster(movie.poster);
                 });
-            })
-           .catch(error => console.error('Error fetching films:', error));
-    }
+                // Add a new event listener to each movie title for updating the movie title
+                li.addEventListener('click', () => {
+                    updateMovieTitle(movie.title);
+                });
+                // Add a new event listener to each movie title for updating the movie description
+                li.addEventListener('click', () => {
+                    updateMovieDescription(movie.description);
+                });
+                // Add a new event listener to each movie title for updating the showtime
+                li.addEventListener('click', () => {
+                    updateShowtime(movie.showtime);
+                });
+                // Add a new event listener to each movie title for updating the runtime
+                li.addEventListener('click', () => {
+                    updateRuntime(movie.runtime);
+                });
+                // Add a new event listener to each movie title for updating the remaining tickets
+                li.addEventListener('click', () => {
+                    updateRemainingTickets(movie.tickets_sold);
+                });
+                filmsList.appendChild(li);
 
-    function filmDetails(film) {
-        let posterElement = document.getElementById('poster');
-        posterElement.src = film.poster;
-        let titleElement = document.getElementById('title');
-        titleElement.textContent = film.title;
-        let runtimeElement = document.getElementById('runtime');
-        runtimeElement.textContent = `${film.runtime} minutes`;
-        let showtimeElement = document.getElementById('showtime');
-        showtimeElement.textContent = film.showtime;
-        let descriptionElement = document.getElementById('film-info');
-        descriptionElement.textContent = film.description;
 
-        let remainingTickets = film.capacity - film.tickets_sold;
-        let ticketNumberElement = document.getElementById('ticket-num');
+                const deleteButton = document.createElement("button");
 
-        if (remainingTickets >= 0) {
-            ticketNumberElement.textContent = `${remainingTickets}`;
-        } else if (remainingTickets === 0) {
-            ticketNumberElement.textContent = "Sold Out"
-        }
-
-        const buyTicketBtn = document.getElementById("buy-ticket");
-        buyTicketBtn.onclick = () => {
-            purchaseTicket(film.id, film.tickets_sold, film.capacity, ticketNumberElement, buyTicketBtn)
-                .then(updatedFilm => {
-                    if (updatedFilm) {
-                        let remainingTickets = updatedFilm.capacity - updatedFilm.tickets_sold;
-                        if (remainingTickets >= 0) {
-                            ticketNumberElement.textContent = `${remainingTickets}`;
-                        } else if (remainingTickets === 0) {
-                            ticketNumberElement.textContent = "Sold Out"
-                        } else if (remainingTickets === 0) {
-                            ticketNumberElement.textContent = "Sold Out";
+                deleteButton.textContent = "Delete";
+                deleteButton.addEventListener('click', () => {
+                    li.remove(movie.id);
+                });
+                fetch(url)
+                    .then(response => {
+                        // if the response is is not successful:
+                        if (!response.ok) {
+                            // we will throw an error message to the user.
+                            throw new Error('Network response was not ok.');
                         }
-                    }
-                })
-                .catch(error => console.error('Ticket purchase error:', error));
-        };
-    }
+                        // otherwise if the response is okay, the .then() method is chained to parse the JSON content of the response.  
+                        return response.json();
+                    })
 
-    filmMenu();
-});
+
+
+                li.appendChild(deleteButton);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching or parsing data:', error);
+        });
+}
+// Function to update the remaining tickets in the HTML
+
+function updateRemainingTickets(remainingTickets) {
+    const ticketNumElement = document.getElementById("ticket-num");
+    ticketNumElement.textContent = `${remainingTickets}`;
+}
+// Function to handle the "Buy Ticket" button click
+function handleBuyTicket() {
+    const ticketNumElement = document.getElementById("ticket-num");
+    let remainingTickets = parseInt(ticketNumElement.textContent);
+    // Reduce the remaining tickets by 1 if there are tickets available
+    if (remainingTickets > 0) {
+        remainingTickets--;
+        updateRemainingTickets(remainingTickets);
+    }
+    // Disable the button and display a message if tickets have run out
+    if (remainingTickets <= 0) {
+        const buyTicketButton = document.getElementById("buy-ticket");
+        buyTicketButton.disabled = true;
+        buyTicketButton.textContent = "Sold Out! NEXT TIME BUY EARLY!";
+    }
+}
+
+// Function to change the poster image based on the selected movie
+function changePoster(posterUrl) {
+    const posterImg = document.getElementById("poster");
+    posterImg.src = posterUrl;
+}
+// Function to update the movie title in the HTML
+function updateMovieTitle(title) {
+    const titleElement = document.getElementById("title");
+    titleElement.textContent = title;
+}
+// Function to update the movie description in the HTML
+function updateMovieDescription(description) {
+    const filmInfoElement = document.getElementById("film-info");
+    filmInfoElement.textContent = description;
+}
+// Function to update the showtime in the HTML
+function updateShowtime(showtime) {
+    const showtimeElement = document.getElementById("showtime");
+    showtimeElement.textContent = showtime;
+}
+// Function to update the runtime in the HTML
+function updateRuntime(runtime) {
+    const runtimeElement = document.getElementById("runtime");
+    runtimeElement.textContent = `${runtime} minutes`;
+}
+// Add event listener to the "Buy Ticket" button
+const buyTicketButton = document.getElementById("buy-ticket");
+buyTicketButton.addEventListener("click", handleBuyTicket);
+
+
+// Call the function to fetch and display movie titles
+addMovieTitles();

@@ -3,34 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FLATDANGO MOVIE THEATRE</title>
-    <link rel="stylesheet" href=" css/style.css">
+    <title>Movie List</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header>
-        <h1>FLATDANGO MOVIE THEATRE</h1>
-    </header>
-    <main>
-        <section id="movieDetails">
-            <h2>Movie Details</h2>
-            <div id="moviePosterContainer">
-                <img id="poster" src="" alt="Movie Poster">
-            </div>
-            <div id="movieInfo">
-                <h3 id="title"></h3>
-                <p><strong>Runtime:</strong> <span id="runtime"></span></p>
-                <p><strong>Showtime:</strong> <span id="showtime"></span></p>
-                <p id="film-info"></p>
-                <p><strong>Available Tickets:</strong> <span id="ticket-num"></span></p>
-                <button id="buy-ticket">Buy Ticket</button>
-            </div>
-        </section>
-        <section id="filmMenu">
-            <h2>Film Menu</h2>
-            <ul id="films"></ul>
-        </section>
-    </main>
-
+    <h1>Movie List</h1>
+    <!-- Movie List -->
+    <ul id="films"></ul>
+    
+    <!-- Movie Details -->
+    <div id="movie-details">
+        <h2 id="title">Movie Title</h2>
+        <p id="film-info">Movie Description</p>
+        <p>Showtime: <span id="showtime">00:00</span></p>
+        <p>Runtime: <span id="runtime">0 minutes</span></p>
+        <p>Remaining Tickets: <span id="ticket-num">0</span></p>
+        
+        <!-- Poster Image -->
+        <img id="poster" src="" alt="Movie Poster">
+        
+        <!-- Buy Ticket Button -->
+        <div class="btn-container">
+            <button id="buy-ticket">Buy Ticket</button>
+        </div>
+    </div>
     <script src="script.js"></script>
-</body>
-</html>
+    </body>
+    </html>
+  
