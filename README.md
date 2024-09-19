@@ -1,7 +1,8 @@
-Week 3 code challenge FLATDANGO MOVIE THEATRE
+#FLATDANGO MOVIE THEATRE
 
-Film Ticket Booking System JavaScript Application
-This JavaScript application interacts with a backend API to provide a Film Ticket Booking System. It allows users to view films, purchase tickets, manage film details, and delete films from the system.
+*Film Ticket Booking System JavaScript Application*
+
+- This JavaScript application interacts with a backend API to provide a Film Ticket Booking System. It allows users to view films, purchase tickets, manage film details, and delete films from the system.
 
 
             FEATURES
@@ -47,12 +48,9 @@ If tickets are available, click the "Buy Ticket" button to purchase a ticket. Th
 Administrators can delete films by clicking the "Delete" button next to each film in the list.
 
 
-               CONTRIBUTING
-Contributions are welcome! If you have any suggestions, improvements, or issues, please open an issue or pull request in this repository.
-
-
-                 LICENSE
-This project is licensed under the MIT License. See the LICENSE file for more details 
-
-
 to visit the site click the link here: [here](https://week3codechallenge-hg8w.vercel.app/)
+
+
+
+### Author
+- JUNNE WANJA 
